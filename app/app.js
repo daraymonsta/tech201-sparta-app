@@ -18,11 +18,14 @@ app.get('/' , function(req , res){
 if(process.env.DB_HOST) {
   mongoose.connect(process.env.DB_HOST);
 
-  app.get("/posts" , function(req,res){
-      Post.find({} , function(err, posts){
-        if(err) return res.send(err);
-        res.render("posts/index" , {posts:posts});
-      })
+  app.get("/posts", async function(req, res) {
+    try {
+      const posts = await Post.find({});
+      res.render("posts/index", { posts: posts });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).send(err);
+    }
   });
 }
 
